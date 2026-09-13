@@ -1,0 +1,30 @@
+[
+  {
+    "id": "smothered-white-v1",
+    "fen": "5rk1/5Npp/4Q3/8/8/8/8/6K1 w - - 0 1",
+    "title": "A knight's final word",
+    "line": ["f7h6", "g8h8", "e6g8", "f8g8", "h6f7"],
+    "hints": ["Look for a double check that forces the king into the corner.", "A queen sacrifice can force the rook to block its own king.", "The knight delivers the final check."]
+  },
+  {
+    "id": "anastasia-v1",
+    "fen": "5rk1/5ppp/8/5N1Q/8/8/6K1/R7 w - - 0 1",
+    "title": "Open the last file",
+    "line": ["f5e7", "g8h8", "h5h7", "h8h7", "a1h1"],
+    "hints": ["Improve the knight with check before opening any lines.", "Remove the pawn shielding the king, even at the cost of your queen.", "The rook and knight can finish the attack together."]
+  },
+  {
+    "id": "opera-finish-v1",
+    "fen": "4kb1r/p2n1ppp/4q3/4p1B1/4P3/1Q6/PPP2PPP/2KR4 w k - 0 16",
+    "title": "The final sacrifice",
+    "line": ["b3b8", "d7b8", "d1d8"],
+    "hints": ["Deflect the knight with a forcing queen sacrifice.", "The open d-file and the bishop work together."]
+  },
+  {
+    "id": "smothered-black-v1",
+    "fen": "6k1/8/8/8/8/4q3/5nPP/5RK1 b - - 0 1",
+    "title": "Turn the tables",
+    "line": ["f2h3", "g1h1", "e3g1", "f1g1", "h3f2"],
+    "hints": ["Use a double check to drive the white king into the corner.", "Make the white rook block its own king.", "A knight can attack through a wall of pieces."]
+  }
+]

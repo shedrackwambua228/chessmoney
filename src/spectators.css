@@ -1,0 +1,12 @@
+.spectators{border:1px solid #dcded1;background:#fff;border-radius:5px;padding:12px;margin-bottom:12px;min-width:0}
+.spectators h3{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;font-size:14px;margin:0}
+.spectators h3 span{font-size:12px;color:#637342}
+.spectators p,.online-section .spectators p{font-size:11px;line-height:1.5;margin:8px 0;color:#69715e;overflow-wrap:anywhere}
+.spectator-comments{max-height:140px;overflow:auto;overscroll-behavior:contain}
+.spectator-comments>div{background:#f1f4e9;border-radius:4px;padding:7px;margin:5px 0;font-size:11px;overflow-wrap:anywhere}
+.spectator-comments p{white-space:pre-wrap}
+.spectator-reactions{display:flex;flex-wrap:wrap;gap:5px}
+.spectators button{font:inherit;font-size:11px;border:1px solid #cdd3be;background:#eef2e2;padding:6px;border-radius:4px;cursor:pointer}
+.spectators textarea{display:block;width:100%;max-height:100px;resize:vertical;border:1px solid #cdd3be;font:inherit}
+.spectators label{font-size:12px}
+.online-game>.online-details:has(.spectators){max-height:calc(100dvh - 120px);overflow:auto}

@@ -1,0 +1,28 @@
+.game-chat{background:#fff;border:1px solid #dddcd1;border-radius:5px;display:flex;flex-direction:column;min-width:0;height:440px;max-height:calc(100dvh - 32px);color:#303729}
+.game-chat h2{font-size:15px;margin:0;padding:14px;border-bottom:1px solid #eeede6}
+.chat-messages{flex:1;min-height:60px;overflow:auto;padding:10px;overscroll-behavior:contain}
+.game-chat .chat-empty,.game-chat .chat-note{font-size:12px;line-height:1.5;color:#737869;margin:4px 0}
+.chat-message{background:#f3f3ee;border-radius:5px;padding:8px;margin-bottom:8px;overflow-wrap:anywhere}
+.chat-message.chat-own{background:#eef2e2}
+.chat-message>div{display:flex;justify-content:space-between;gap:6px;font-size:11px}
+.chat-message time{font-size:10px;color:#737869;white-space:nowrap}
+.game-chat .chat-message p{font-size:13px;line-height:1.45;margin:5px 0 0;white-space:pre-wrap;color:inherit}
+.game-chat form{padding:10px;display:grid;gap:6px}
+.game-chat textarea{resize:vertical;max-height:100px;min-width:0;width:100%;font:inherit;font-size:13px;border:1px solid #d0d3c5;border-radius:4px;padding:8px}
+.game-chat button{font:inherit;font-size:12px;border:1px solid #d0d3c5;border-radius:4px;padding:7px;background:#eef2e2;color:#303729;cursor:pointer}
+.game-chat button:disabled{opacity:.45;cursor:default}
+.chat-quick{display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px 0}
+.chat-quick button{font-size:11px;padding:5px}
+.game-chat>.chat-note{padding:0 10px}
+.play-room .play-layout{position:relative}
+.play-room .play-layout>.game-chat{grid-column:1/-1;height:300px}
+@media(min-width:1200px) and (min-aspect-ratio:2/1),(min-width:1364px) and (min-aspect-ratio:16/9){
+ .play-room .play-layout>.game-chat{position:absolute;right:100%;top:8px;width:clamp(140px,calc((100vw - var(--practice-board-size) - 376px)/2 - 12px),240px);height:calc(100dvh - 32px)}
+}
+@media(min-width:1200px){
+ .online-section .online-game:has(>.game-chat){grid-template-columns:190px minmax(0,1fr) 280px}
+ .online-game>.game-chat{grid-column:1;grid-row:1;position:sticky;top:12px}
+ .online-game>div:first-child{grid-column:2}
+ .online-game>.online-details{grid-column:3}
+}
+@media(max-width:1199px){.online-game>.game-chat{grid-column:1/-1;height:300px}}

@@ -1,0 +1,10 @@
+Chess piece artwork
+
+The black knight (knight-b.svg) is the original user-supplied SVG, preserved unchanged, with its embedded Uray M. Janos attribution and Creative Commons notice.
+
+The other eleven files replaced failed HTTP downloads with unmodified cburnett SVGs by Colin M. L. Burnett, from the Lichess source repository:
+https://github.com/lichess-org/lila/tree/master/public/piece/cburnett
+
+Source filenames map w/b + K,Q,R,B,N,P to king,queen,rook,bishop,knight,pawn-w/b.svg.
+License: GPL version 2 or later, as documented at https://github.com/lichess-org/lila/blob/master/COPYING.md
+The SVG files themselves are the editable source. See PIECES-GPL-2.txt for the license.

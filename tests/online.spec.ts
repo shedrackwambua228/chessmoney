@@ -1,0 +1,48 @@
+import { test, expect } from '@playwright/test'
+
+test('two accounts can reconnect within the grace period and win by abandonment after it expires', async ({ browser }) => {
+  test.setTimeout(120000)
+  const contextA = await browser.newContext({ baseURL: 'http://127.0.0.1:5173' })
+  const contextB = await browser.newContext({ baseURL: 'http://127.0.0.1:5173' })
+  const white = await contextA.newPage(), black = await contextB.newPage()
+  const suffix = `${Date.now()}-${Math.floor(Math.random() * 10000)}`
+  try {
+    for (const [page, name] of [[white, `White-${suffix}`], [black, `Black-${suffix}`]] as const) {
+      await page.goto('/')
+      await page.getByRole('button', { name: 'Online', exact: true }).click()
+      await page.getByRole('button', { name: 'Create an account', exact: true }).click()
+      await page.getByLabel('Player name').fill(name)
+      await page.getByLabel('Email', { exact: true }).fill(`${name}@example.com`)
+      await page.getByLabel('Password', { exact: true }).fill('Browser test password 123')
+      await page.getByRole('button', { name: 'Create account', exact: true }).click()
+      await expect(page.getByText(`Playing as ${name}`, { exact: true })).toBeVisible()
+    }
+    await white.getByRole('button', { name: 'Create online game', exact: true }).click()
+    await expect(white.getByRole('heading', { name: 'Waiting for an opponent', exact: true })).toBeVisible()
+    await black.locator('.online-row').filter({ hasText: `White-${suffix}` }).getByRole('button', { name: 'Join', exact: true }).click()
+    await expect(white.getByRole('heading', { name: 'Your turn', exact: true })).toBeVisible()
+    await white.getByRole('button', { name: 'e2 White pawn', exact: true }).click()
+    await white.getByRole('button', { name: /e4 empty/ }).click()
+    await expect(black.getByRole('button', { name: 'e4 White pawn', exact: true })).toBeVisible()
+    await black.getByRole('button', { name: 'e7 Black pawn', exact: true }).click()
+    await black.getByRole('button', { name: /e5 empty/ }).click()
+    await expect(white.getByRole('button', { name: 'e5 Black pawn', exact: true })).toBeVisible()
+    await contextB.setOffline(true)
+    await expect(white.getByRole('status')).toContainText('Black disconnected. Reconnect in', { timeout: 15000 })
+    await expect(white.getByRole('heading', { name: 'Waiting for reconnection', exact: true })).toBeVisible()
+    await contextB.setOffline(false)
+    await expect(white.getByRole('heading', { name: 'Your turn', exact: true })).toBeVisible({ timeout: 10000 })
+    await expect(white.getByText('Black disconnected.', { exact: false })).toHaveCount(0)
+    await white.reload()
+    await white.getByRole('button', { name: 'Online', exact: true }).click()
+    await white.locator('.online-row').filter({ hasText: `White-${suffix}` }).getByRole('button', { name: 'Open', exact: true }).click()
+    await expect(white.getByRole('button', { name: 'e5 Black pawn', exact: true })).toBeVisible()
+    await contextB.setOffline(true)
+    await expect(white.getByRole('heading', { name: 'White wins by abandonment', exact: true })).toBeVisible({ timeout: 65000 })
+    await expect(white.getByText('Black disconnected.', { exact: false })).toHaveCount(0)
+    await contextB.setOffline(false)
+    await expect(black.getByRole('heading', { name: 'White wins by abandonment', exact: true })).toBeVisible({ timeout: 10000 })
+    await white.getByRole('button', { name: 'Sign out', exact: true }).click()
+    await expect(white.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible()
+  } finally { await contextA.close(); await contextB.close() }
+})
