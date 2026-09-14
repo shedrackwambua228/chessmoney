@@ -3,6 +3,15 @@ import { Injectable } from '@nestjs/common'
 type YouTubeItem = { id?: { videoId?: unknown }; snippet?: { title?: unknown; channelTitle?: unknown; publishedAt?: unknown; thumbnails?: { medium?: { url?: unknown }; high?: { url?: unknown } } } }
 type Video = { id: string; title: string; channel: string; publishedAt: string; thumbnail: string; url: string }
 
+function shuffled<T>(items: T[]) {
+  const copy = [...items]
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1))
+    ;[copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]]
+  }
+  return copy
+}
+
 @Injectable()
 export class VideosService {
   private cached: { expiresAt: number; videos: Video[] } | null = null
@@ -12,18 +21,18 @@ export class VideosService {
     const key = process.env.YOUTUBE_API_KEY
     if (!key) return { videos: [], configured: false }
     const url = new URL('https://www.googleapis.com/youtube/v3/search')
-    url.search = new URLSearchParams({ part: 'snippet', q: 'chess tournament highlights', type: 'video', order: 'date', maxResults: '6', key }).toString()
+    url.search = new URLSearchParams({ part: 'snippet', q: 'chess tournament highlights', type: 'video', order: 'date', maxResults: '25', publishedAfter: new Date(Date.now() - 180 * 24 * 60 * 60_000).toISOString(), key }).toString()
     try {
       const response = await fetch(url, { signal: AbortSignal.timeout(5000) })
       if (!response.ok) return { videos: [], configured: true }
       const body = await response.json() as { items?: YouTubeItem[] }
-      const videos = (body.items ?? []).flatMap(item => {
+      const videos = shuffled((body.items ?? []).flatMap(item => {
         const id = typeof item.id?.videoId === 'string' ? item.id.videoId : null
         const title = typeof item.snippet?.title === 'string' ? item.snippet.title : null
         const thumbnail = item.snippet?.thumbnails?.high?.url ?? item.snippet?.thumbnails?.medium?.url
         if (!id || !title || typeof thumbnail !== 'string') return []
         return [{ id, title, thumbnail, channel: typeof item.snippet?.channelTitle === 'string' ? item.snippet.channelTitle : 'YouTube', publishedAt: typeof item.snippet?.publishedAt === 'string' ? item.snippet.publishedAt : '', url: `https://www.youtube.com/watch?v=${encodeURIComponent(id)}` }]
-      })
+      })).slice(0, 6)
       this.cached = { videos, expiresAt: Date.now() + 5 * 60_000 }
       return { videos, configured: true }
     } catch { return { videos: [], configured: true } }

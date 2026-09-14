@@ -2,7 +2,7 @@
 import { Response } from 'express'
 import { AuthService, SESSION_MS } from './auth.service'
 import { AuthGuard, AuthRequest, sessionToken } from './auth.guard'
-import { LoginDto, RegisterDto } from './auth.dto'
+import { LoginDto, RegisterDto, ResendVerificationDto, VerifyEmailDto } from './auth.dto'
 
 const cookieOptions = () => ({ httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' as const, path: '/api' })
 @Controller('auth')
@@ -10,10 +10,16 @@ export class AuthController {
   constructor(private readonly auth: AuthService) {}
   @Post('register')
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) response: Response) {
-    const { user, token } = await this.auth.register(dto.email, dto.name, dto.password)
+    return this.auth.register(dto.email, dto.name, dto.password)
+  }
+  @Post('verify-email')
+  async verifyEmail(@Body() dto: VerifyEmailDto, @Res({ passthrough: true }) response: Response) {
+    const { user, token } = await this.auth.verifyEmail(dto.email, dto.code)
     response.cookie('mochess_session', token, { ...cookieOptions(), maxAge: SESSION_MS })
     return { user }
   }
+  @Post('resend-verification') resendVerification(@Body() dto: ResendVerificationDto) { return this.auth.resendVerification(dto.email) }
+  @Get('stats') stats() { return { registeredUsers: this.auth.registeredUserCount() } }
   @Post('login')
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) response: Response) {
     const { user, token } = await this.auth.login(dto.email, dto.password)

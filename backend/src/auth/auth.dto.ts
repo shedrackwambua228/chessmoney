@@ -15,3 +15,18 @@ export class RegisterDto extends LoginDto {
   name!: string
 }
 
+export class VerifyEmailDto {
+  @Transform(({ value }) => typeof value === 'string' ? value.trim().toLowerCase() : value)
+  @IsEmail() @MaxLength(254)
+  email!: string
+
+  @IsString() @Matches(/^\d{6}$/)
+  code!: string
+}
+
+export class ResendVerificationDto {
+  @Transform(({ value }) => typeof value === 'string' ? value.trim().toLowerCase() : value)
+  @IsEmail() @MaxLength(254)
+  email!: string
+}
+

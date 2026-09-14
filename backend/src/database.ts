@@ -15,7 +15,7 @@ export class Store implements OnModuleDestroy {
     this.db.pragma('journal_mode = DELETE')
     this.db.pragma('synchronous = FULL')
     const version = this.db.pragma('user_version', { simple: true }) as number
-    if (version > 5) { this.db.close(); throw new Error('Database schema is newer than this API supports') }
+    if (version > 6) { this.db.close(); throw new Error('Database schema is newer than this API supports') }
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE COLLATE NOCASE,
@@ -75,6 +75,14 @@ export class Store implements OnModuleDestroy {
         user_id TEXT NOT NULL REFERENCES users(id), text TEXT NOT NULL, created_at INTEGER NOT NULL
       ); CREATE INDEX spectator_comments_game ON spectator_comments(game_id,id);`)
       this.db.pragma('user_version = 5')
+    }).immediate()
+    if (version < 6) this.db.transaction(() => {
+      this.db.exec(`ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0;
+        CREATE TABLE email_verification_codes (
+          user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+          hash TEXT NOT NULL, expires_at INTEGER NOT NULL, attempts INTEGER NOT NULL DEFAULT 0
+        );`)
+      this.db.pragma('user_version = 6')
     }).immediate()
   }
   onModuleDestroy() { this.db.close() }
