@@ -1,11 +1,14 @@
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
+import { NestExpressApplication } from '@nestjs/platform-express'
 import { json, Request, Response, NextFunction } from 'express'
 import { randomUUID } from 'node:crypto'
+import { resolve } from 'node:path'
 import { AppModule } from './app.module'
 
 export async function createApp() {
-  const app = await NestFactory.create(AppModule, { bodyParser: false })
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { bodyParser: false })
+  const frontendDirectory = resolve(__dirname, '../../dist')
   const origins = (process.env.WEB_ORIGIN ?? 'http://127.0.0.1:5173,http://localhost:5173').split(',').map(value => value.trim())
   if (process.env.NODE_ENV === 'production' && (!process.env.WEB_ORIGIN || origins.some(value => !value.startsWith('https://')))) throw new Error('Production requires explicit HTTPS WEB_ORIGIN')
   const limits = new Map<string, { count: number; until: number }>()
@@ -40,6 +43,12 @@ export async function createApp() {
   })
   app.setGlobalPrefix('api')
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
+  app.useStaticAssets(frontendDirectory)
+  await app.init()
+  app.getHttpAdapter().getInstance().get('*', (req: Request, res: Response, next: NextFunction) => {
+    if (req.path === '/api' || req.path.startsWith('/api/')) return next()
+    res.sendFile(resolve(frontendDirectory, 'index.html'), error => { if (error) next(error) })
+  })
   app.enableShutdownHooks()
   return app
 }
