@@ -12,3 +12,4 @@
 .club-board i{display:none}
 .club-board{gap:0;overflow:hidden}.club-board>span{min-width:0;min-height:0}
 .club-live-board .play-board{width:100%;max-width:none;margin:0;border:8px solid #26332c;box-shadow:0 25px 60px #0007}.club-live-board .play-piece{font-size:clamp(22px,3.2vw,42px)}.club-live-board .rank-label,.club-live-board .file-label{color:#33402e}
+.video-card{border:0;background:transparent;padding:0;text-align:left;cursor:pointer;color:inherit}.video-card:focus-visible{outline:3px solid #b8d979;outline-offset:4px;border-radius:7px}.video-player{margin:0 0 20px}.video-player iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:9px;background:#101510}.video-close{margin-top:8px;border:0;background:transparent;color:#587a3e;text-decoration:underline;cursor:pointer;padding:0;font:inherit}
