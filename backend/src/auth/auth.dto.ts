@@ -30,3 +30,11 @@ export class ResendVerificationDto {
   email!: string
 }
 
+export class ResetPasswordDto extends ResendVerificationDto {
+  @IsString() @Matches(/^\d{6}$/)
+  code!: string
+
+  @IsString() @MinLength(10) @MaxLength(128)
+  password!: string
+}
+

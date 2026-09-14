@@ -7,7 +7,7 @@ import { api, ApiError } from './api'
 type User = { id: string; name: string }
 type Piece = { type: 'p' | 'n' | 'b' | 'r' | 'q' | 'k'; color: 'w' | 'b' } | null
 const pieces = (rank: string, color: 'w' | 'b'): Piece[] => [...rank].map(type => type === '-' ? null : { type: type as NonNullable<Piece>['type'], color })
-const position: Piece[] = [...pieces('r-bqkbnr', 'b'), ...pieces('ppp--ppp', 'b'), ...Array<Piece>(8).fill(null), ...pieces('---p----', 'b'), ...pieces('--b-p---', 'w'), ...pieces('--n-n--p', 'w'), ...pieces('ppp--ppp', 'w'), ...pieces('r-bqk--r', 'w')]
+const position: Piece[] = [...pieces('rnbqkbnr', 'b'), ...pieces('pppppppp', 'b'), ...Array<Piece>(32).fill(null), ...pieces('pppppppp', 'w'), ...pieces('rnbqkbnr', 'w')]
 
 export default function AccessGate() {
   const [user, setUser] = useState<User | null | undefined>(undefined)

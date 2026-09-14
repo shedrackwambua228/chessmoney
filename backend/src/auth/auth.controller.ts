@@ -2,7 +2,7 @@
 import { Response } from 'express'
 import { AuthService, SESSION_MS } from './auth.service'
 import { AuthGuard, AuthRequest, sessionToken } from './auth.guard'
-import { LoginDto, RegisterDto, ResendVerificationDto, VerifyEmailDto } from './auth.dto'
+import { LoginDto, RegisterDto, ResendVerificationDto, ResetPasswordDto, VerifyEmailDto } from './auth.dto'
 
 const cookieOptions = () => ({ httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' as const, path: '/api' })
 @Controller('auth')
@@ -19,6 +19,8 @@ export class AuthController {
     return { user }
   }
   @Post('resend-verification') resendVerification(@Body() dto: ResendVerificationDto) { return this.auth.resendVerification(dto.email) }
+  @Post('forgot-password') forgotPassword(@Body() dto: ResendVerificationDto) { return this.auth.forgotPassword(dto.email) }
+  @Post('reset-password') resetPassword(@Body() dto: ResetPasswordDto) { return this.auth.resetPassword(dto.email, dto.code, dto.password) }
   @Get('stats') stats() { return { registeredUsers: this.auth.registeredUserCount() } }
   @Post('login')
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) response: Response) {
