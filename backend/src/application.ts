@@ -45,7 +45,7 @@ export async function createApp() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
   app.useStaticAssets(frontendDirectory)
   await app.init()
-  app.getHttpAdapter().getInstance().get('*', (req: Request, res: Response, next: NextFunction) => {
+  app.getHttpAdapter().getInstance().get('/{*path}', (req: Request, res: Response, next: NextFunction) => {
     if (req.path === '/api' || req.path.startsWith('/api/')) return next()
     res.sendFile(resolve(frontendDirectory, 'index.html'), error => { if (error) next(error) })
   })
