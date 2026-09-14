@@ -28,6 +28,8 @@ export class AuthController {
   }
   @Get('me') @UseGuards(AuthGuard)
   me(@Req() request: AuthRequest) { return { user: request.user } }
+  @Get('notifications') @UseGuards(AuthGuard)
+  notifications(@Req() request: AuthRequest) { return { notifications: this.auth.notifications(request.user), registeredUsers: this.auth.registeredUserCount() } }
   @Post('logout') @UseGuards(AuthGuard)
   logout(@Req() request: AuthRequest, @Res({ passthrough: true }) response: Response) {
     this.auth.logout(sessionToken(request))
