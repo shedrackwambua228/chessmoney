@@ -16,7 +16,7 @@ export async function createApp() {
     res.setHeader('X-Content-Type-Options', 'nosniff')
     res.setHeader('Cache-Control', 'no-store')
     res.setHeader('X-Request-Id', randomUUID())
-    if (req.headers.origin && !origins.includes(req.headers.origin)) return res.status(403).json({ message: 'Origin not allowed' })
+    if (req.path.startsWith('/api') && req.headers.origin && !origins.includes(req.headers.origin)) return res.status(403).json({ message: 'Origin not allowed' })
     const now = Date.now()
     // Expire entries so varying source addresses cannot grow this map indefinitely.
     if (limits.size > 10000) for (const [key, value] of limits) if (value.until <= now) limits.delete(key)
